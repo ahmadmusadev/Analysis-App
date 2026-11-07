@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>میزان — تعلیمی جائزہ تجزیہ</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body><div class="app">
+<div class="card">
+<h1>میزان — تعلیمی جائزہ تجزیہ</h1><div class="sub">طلبہ کے نمبروں سے چار کیٹگریز کا خودکار تجزیہ</div>
+<div class="grid">
+<div><label>کلاس</label><select id="classSelect"><option value="">کلاس منتخب کریں</option><option value="1">کلاس 1</option><option value="2">کلاس 2</option><option value="3">کلاس 3</option><option value="4">کلاس 4</option><option value="5">کلاس 5</option><option value="6">کلاس 6</option><option value="7">کلاس 7</option><option value="8">کلاس 8</option><option value="9">کلاس 9</option><option value="10">کلاس 10</option><option value="11">کلاس 11</option><option value="12">کلاس 12</option><option value="13">کلاس 13</option><option value="14">کلاس 14</option><option value="15">کلاس 15</option><option value="16">کلاس 16</option><option value="17">کلاس 17</option><option value="18">کلاس 18</option><option value="19">کلاس 19</option><option value="20">کلاس 20</option><option value="21">کلاس 21</option></select></div>
+<div><label>کل نمبر</label><input id="totalMarks" type="number" min="1" placeholder="مثلاً 60"></div>
+<div class="marks-field"><label>تمام طلبہ کے حاصل کردہ نمبر</label><input id="marksInput" type="text" inputmode="numeric" placeholder="مثلاً 54, 48, 39, -, 52, 45, 27"></div>
+</div>
+<div id="error"></div><div class="actions no-print"><button onclick="analyze()">تجزیہ کریں</button><button class="gray" onclick="clearForm()">صاف کریں</button></div>
+</div>
+<div id="result" class="card">
+<h2 style="text-align:center">تجزیاتی نتیجہ</h2>
+<div class="meta"><span>کل نمبر: <b id="outTotal"></b></span><span>کل اندراجات: <b id="outEntries"></b></span><span>شریک طلبہ: <b id="outPart"></b></span><span>غیر حاضر: <b id="outAbsent"></b></span></div>
+<div class="summary">
+<div class="box">90٪ یا زائد<strong id="s1">0</strong></div><div class="box">85٪ تا 89٪<strong id="s2">0</strong></div>
+<div class="box">75٪ تا 84٪<strong id="s3">0</strong></div><div class="box">74٪ یا کم<strong id="s4">0</strong></div></div>
+<div class="mizan-wrap">
+<table class="mizan-table">
+<thead>
+<tr>
+<th colspan="2">90٪ یا زائد</th>
+<th colspan="2">85٪ تا 89٪</th>
+<th colspan="2">75٪ تا 84٪</th>
+<th colspan="2">74٪ یا کم</th>
+</tr>
+<tr class="subheads">
+<th>فیصد</th><th>تعداد</th>
+<th>فیصد</th><th>تعداد</th>
+<th>فیصد</th><th>تعداد</th>
+<th>فیصد</th><th>تعداد</th>
+</tr>
+</thead>
+<tbody>
+<tr class="values">
+<td id="p1">0٪</td><td id="c1">0</td>
+<td id="p2">0٪</td><td id="c2">0</td>
+<td id="p3">0٪</td><td id="c3">0</td>
+<td id="p4">0٪</td><td id="c4">0</td>
+</tr>
+<tr class="total">
+<td colspan="2">90٪ یا زائد: <b id="t1">0</b></td>
+<td colspan="2">85٪ تا 89٪: <b id="t2">0</b></td>
+<td colspan="2">75٪ تا 84٪: <b id="t3">0</b></td>
+<td colspan="2">74٪ یا کم: <b id="t4">0</b></td>
+</tr>
+<tr class="grand-total">
+<td colspan="4">کل شریک طلبہ: <b id="totalCount">0</b></td>
+<td colspan="4">فیصد کا میزان: <b id="totalPct">100٪</b></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p id="valid" class="valid">✓ فیصد کا مجموعہ 100٪ ہے</p>
+<div class="actions no-print" style="justify-content:center">
+<button id="addClassBtn" onclick="addCurrentClass()">مکمل کلاسز کے میزان میں شامل کریں</button>
+</div>
+</div></div>
+<div id="consolidated" class="card consolidated-card">
+<div class="section-heading"><div><h2>مکمل کلاسز کا مجموعی میزان</h2><div class="section-note">ہر کلاس کا انفرادی نتیجہ تیار کرکے اسے یہاں شامل کریں۔</div></div><div class="class-counter"><b id="classCount">0</b> / 21 کلاسیں</div></div>
+<div class="mizan-wrap consolidated-wrap">
+<table class="mizan-table consolidated-table">
+<thead><tr><th>کلاس</th><th>اہل طلبہ</th><th>شریک</th><th>90٪ یا زائد<br><small>تعداد / فیصد</small></th><th>85٪ تا 89٪<br><small>تعداد / فیصد</small></th><th>75٪ تا 84٪<br><small>تعداد / فیصد</small></th><th>74٪ یا کم<br><small>تعداد / فیصد</small></th></tr></thead>
+<tbody id="consolidatedBody"></tbody>
+<tfoot><tr class="grand-total"><td>میزان / Total</td><td id="grandEligible">0</td><td id="grandPart">0</td><td id="grand1">0</td><td id="grand2">0</td><td id="grand3">0</td><td id="grand4">0</td></tr></tfoot>
+</table></div>
+<p id="consolidatedStatus" class="valid">ابھی کوئی کلاس شامل نہیں کی گئی۔</p>
+<div class="actions no-print consolidated-print-action" style="justify-content:center;gap:10px;flex-wrap:wrap">
+<button onclick="printConsolidatedReport()">مجموعی میزان پرنٹ / PDF</button>
+<button class="gray" onclick="shareConsolidatedPDF()">مجموعی میزان PDF شیئر کریں</button>
+</div>
+</div>
+
+<div id="customTotalCard" class="card custom-total-card no-print">
+  <div class="section-heading">
+    <div>
+      <h2>منتخب کلاسوں کا مجموعی میزان</h2>
+      <p class="section-note">جن کلاسوں کا نتیجہ مجموعی فہرست میں شامل ہو چکا ہے، ان میں سے مطلوبہ کلاسیں منتخب کریں۔ ان کا الگ مجموعی میزان خود بخود تیار ہوگا۔</p>
+    </div>
+  </div>
+  <div class="saved-pdf-tools">
+    <div class="saved-pdf-title">محفوظ شدہ مجموعی PDF</div>
+    <div class="saved-pdf-actions">
+      <button type="button" onclick="loadSavedMizanPDF()">اسی ڈیوائس کی محفوظ PDF کھولیں</button>
+      <button type="button" class="gray" onclick="document.getElementById('mizanPdfInput').click()">اپنی بنائی ہوئی Mizan PDF منتخب کریں</button>
+      <input id="mizanPdfInput" type="file" accept="application/pdf,.pdf" hidden onchange="importMizanPDF(this.files[0])">
+    </div>
+    <p id="savedPdfStatus" class="saved-pdf-status">PDF بنانے کے بعد اس میں کلاسوں کا اصل ڈیٹا بھی محفوظ ہوگا، جسے بعد میں دوبارہ کھولا جا سکتا ہے۔</p>
+  </div>
+  <div id="customClassSelector" class="custom-class-selector"></div>
+  <div class="custom-selector-actions">
+    <button type="button" class="gray" onclick="selectAllCustomClasses()">تمام شامل شدہ کلاسیں منتخب کریں</button>
+    <button type="button" class="gray" onclick="clearCustomClasses()">انتخاب ختم کریں</button>
+  </div>
+  <div class="mizan-wrap">
+    <table class="custom-total-table">
+      <thead><tr><th>منتخب کلاسیں</th><th>اہل طلبہ</th><th>شریک طلبہ</th><th>90٪ یا زائد</th><th>85٪ تا 89٪</th><th>75٪ تا 84٪</th><th>74٪ یا کم</th></tr></thead>
+      <tbody><tr><td id="customClassCount">0</td><td id="customEligible">0</td><td id="customParticipated">0</td><td id="custom1">0</td><td id="custom2">0</td><td id="custom3">0</td><td id="custom4">0</td></tr></tbody>
+    </table>
+  </div>
+  <p id="customTotalStatus" class="custom-total-note">ابھی کوئی کلاس منتخب نہیں کی گئی۔</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="script.js"></script></body></html>
